@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>5ª Avenida — Caja</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --azul: #1B3A8C;
+  --azul-oscuro: #0F2260;
+  --azul-claro: #E8EEF9;
+  --rojo: #C0392B;
+  --rojo-suave: #FDECEA;
+  --verde: #1A7A3C;
+  --verde-claro: #E6F4EC;
+  --blanco: #FFFFFF;
+  --gris-bg: #F2F4F8;
+  --gris-medio: #DDE2EE;
+  --gris-texto: #6B7A99;
+  --negro: #0D1B2A;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--gris-bg); color: var(--negro); min-height: 100vh; overflow-x: hidden; }
+
+/* ── NAV ── */
+nav {
+  background: var(--azul);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; height: 54px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+.nav-logo {
+  display: flex; flex-direction: column; line-height: 1.1;
+}
+.nav-logo .linea1 { color: #fff; font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.75; }
+.nav-logo .linea2 { color: #fff; font-size: 16px; font-weight: 900; letter-spacing: -0.3px; }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab {
+  background: transparent; border: none; color: rgba(255,255,255,0.55);
+  font-size: 12px; font-weight: 700; padding: 7px 13px; border-radius: 7px;
+  cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif;
+  letter-spacing: 0.2px;
+}
+.nav-tab.active { background: rgba(255,255,255,0.18); color: #fff; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── CAJA LAYOUT ── */
+.caja-layout {
+  display: grid; grid-template-columns: 1fr 310px;
+  gap: 12px; padding: 12px;
+  height: calc(100vh - 54px);
+}
+.menu-panel { overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-bottom: 8px; }
+
+/* ── SECTION HEADERS ── */
+.sec-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.sec-header .sec-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.sec-icon.azul { background: var(--azul-claro); }
+.sec-icon.verde { background: var(--verde-claro); }
+.sec-icon.rojo  { background: var(--rojo-suave); }
+.sec-titulo {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--gris-texto);
+}
+
+/* ── ALMUERZO BUILDER ── */
+.builder-card {
+  background: var(--blanco); border-radius: 12px;
+  border: 2px solid var(--gris-medio); overflow: hidden;
+}
+.builder-tabs {
+  display: flex; border-bottom: 2px solid var(--gris-medio);
+}
+.builder-tab {
+  flex: 1; background: none; border: none; padding: 10px 6px;
+  font-size: 12px; font-weight: 700; color: var(--gris-texto);
+  cursor: pointer; font-family: 'Inter', sans-serif;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: all 0.15s;
+}
+.builder-tab.active { color: var(--azul); border-bottom-color: var(--azul); }
+
+.builder-panel { display: none; padding: 10px; }
+.builder-panel.active { display: block; }
+
+/* Platos completos */
+.platos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 7px; }
+.plato-btn {
+  background: var(--blanco); border: 2px solid var(--gris-medio);
+  border-radius: 10px; padding: 11px 8px; cursor: pointer;
+  text-align: center; font-family: 'Inter', sans-serif;
+  transition: all 0.12s; display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.plato-btn:active { background: var(--azul); border-color: var(--azul); color: white; transform: scale(0.97); }
+.plato-btn .pn { font-size: 12px; font-weight: 600; line-height: 1.3; }
+.plato-btn .pp { font-size: 14px; font-weight: 800; color: var(--azul); }
+.plato-btn:active .pp { color: rgba(255,255,255,0.8); }
+
+/* Porciones individuales */
+.porciones-nota {
+  font-size: 11px; color: var(--gris-texto); margin-bottom: 8px;
+  background: var(--azul-claro); padding: 6px 10px; border-radius: 7px;
+}
+.porciones-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 7px; }
+.porcion-btn {
+  background: var(--blanco); border: 2px solid var(--gris-medio);
+  border-radius: 10px; padding: 9px 7px; cursor: pointer;
+  font-family: 'Inter', sans-serif; display: flex; flex-direction: column;
+  align-items: center; gap: 2px; transition: all 0.12s; text-align: center;
+}
+.porcion-btn:active { background: var(--verde); border-color: var(--verde); color: white; transform: scale(0.97); }
+.porcion-btn .porn { font-size: 11px; font-weight: 600; line-height: 1.3; }
+.porcion-btn .porp { font-size: 13px; font-weight: 800; color: var(--verde); }
+.porcion-btn:active .porp { color: rgba(255,255,255,0.8); }
+.porcion-size-row { display: flex; gap: 4px; margin-top: 3px; }
+.size-tag {
+  font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+  background: var(--gris-bg); color: var(--gris-texto);
+}
+
+/* ── ITEM GRID genérico ── */
+.items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 7px; }
+.item-btn {
+  background: var(--blanco); border: 2px solid var(--gris-medio);
+  border-radius: 10px; padding: 10px 7px; cursor: pointer;
+  text-align: center; font-family: 'Inter', sans-serif;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: all 0.12s;
+}
+.item-btn:active { background: var(--azul); border-color: var(--azul); color: white; transform: scale(0.97); }
+.item-btn .in { font-size: 11px; font-weight: 600; line-height: 1.3; }
+.item-btn .ip { font-size: 13px; font-weight: 800; color: var(--azul); }
+.item-btn:active .ip { color: rgba(255,255,255,0.8); }
+
+/* pupusa */
+.pupusa-btn {
+  background: var(--blanco); border: 2px solid var(--gris-medio);
+  border-radius: 10px; padding: 11px 8px; cursor: pointer;
+  text-align: center; font-family: 'Inter', sans-serif;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: all 0.12s;
+}
+.pupusa-btn:active { background: var(--verde); border-color: var(--verde); color: white; transform: scale(0.97); }
+.pupusa-btn .pun { font-size: 12px; font-weight: 600; }
+.pupusa-btn .pup { font-size: 14px; font-weight: 800; color: var(--verde); }
+.pupusa-btn:active .pup { color: rgba(255,255,255,0.8); }
+
+/* panadería */
+.pan-btn {
+  background: var(--blanco); border: 2px solid var(--gris-medio);
+  border-radius: 10px; padding: 10px 7px; cursor: pointer;
+  text-align: center; font-family: 'Inter', sans-serif;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  transition: all 0.12s;
+}
+.pan-btn:active { background: var(--rojo); border-color: var(--rojo); color: white; transform: scale(0.97); }
+.pan-btn .pann { font-size: 11px; font-weight: 600; line-height: 1.3; }
+.pan-btn .panp { font-size: 13px; font-weight: 800; color: var(--rojo); }
+.pan-btn:active .panp { color: rgba(255,255,255,0.8); }
+
+/* ── PANEL PEDIDO ── */
+.pedido-panel {
+  background: var(--blanco); border-radius: 12px;
+  border: 2px solid var(--gris-medio); display: flex;
+  flex-direction: column; overflow: hidden;
+}
+.pedido-top {
+  background: var(--azul); padding: 11px 14px;
+}
+.pedido-top-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.pedido-titulo { color: white; font-size: 14px; font-weight: 800; }
+.tipo-btns { display: flex; gap: 4px; }
+.btn-tipo {
+  background: rgba(255,255,255,0.15); border: none; color: rgba(255,255,255,0.6);
+  font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 6px;
+  cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.12s;
+}
+.btn-tipo.activo { background: white; color: var(--azul); }
+
+.pedido-items {
+  flex: 1; overflow-y: auto; padding: 8px;
+  display: flex; flex-direction: column; gap: 4px; min-height: 0;
+}
+.pedido-vacio { color: var(--gris-texto); font-size: 13px; text-align: center; padding: 28px 0; }
+
+.pedido-linea {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 7px 8px; border-radius: 8px; background: var(--gris-bg); gap: 6px;
+}
+.pl-info { flex: 1; }
+.pl-nombre { font-size: 12px; font-weight: 600; line-height: 1.4; }
+.pl-det { font-size: 10px; color: var(--gris-texto); margin-top: 1px; }
+.pl-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.pl-precio { font-size: 13px; font-weight: 800; color: var(--azul); }
+.btn-q { background: none; border: none; color: var(--rojo); font-size: 18px; cursor: pointer; font-weight: 700; line-height: 1; padding: 0; }
+
+.pedido-footer { border-top: 2px solid var(--gris-medio); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.total-row { display: flex; justify-content: space-between; align-items: center; }
+.total-lbl { font-size: 12px; font-weight: 700; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 0.5px; }
+.total-val { font-size: 26px; font-weight: 900; color: var(--negro); }
+.pago-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.btn-pago {
+  border: none; border-radius: 8px; padding: 12px 0;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: opacity 0.15s; letter-spacing: 0.2px;
+}
+.btn-pago:active { opacity: 0.8; }
+.btn-ef { background: var(--verde); color: white; }
+.btn-tar { background: var(--azul); color: white; }
+.btn-limpiar-ped {
+  background: none; border: 2px solid var(--gris-medio);
+  border-radius: 8px; padding: 8px 0; font-size: 12px; font-weight: 600;
+  color: var(--gris-texto); cursor: pointer; font-family: 'Inter', sans-serif; width: 100%;
+}
+
+/* ── VENTAS ── */
+.ventas-screen { padding: 16px; max-width: 960px; margin: 0 auto; }
+.page-titulo { font-size: 20px; font-weight: 900; color: var(--azul); margin-bottom: 16px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 10px; margin-bottom: 18px; }
+.stat-card { background: white; border-radius: 10px; padding: 13px 14px; border: 2px solid var(--gris-medio); }
+.stat-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gris-texto); margin-bottom: 3px; }
+.stat-val { font-size: 22px; font-weight: 900; }
+.stat-sub { font-size: 11px; color: var(--gris-texto); margin-top: 1px; }
+
+.tabla-card { background: white; border-radius: 10px; border: 2px solid var(--gris-medio); overflow: hidden; margin-bottom: 14px; }
+.tabla-head { background: var(--azul); color: white; font-size: 13px; font-weight: 700; padding: 10px 14px; }
+table.vtbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.vtbl th { background: var(--gris-bg); padding: 8px 12px; text-align: left; font-weight: 700; color: var(--gris-texto); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+table.vtbl td { padding: 8px 12px; border-top: 1px solid var(--gris-medio); vertical-align: top; }
+table.vtbl tr:hover td { background: var(--gris-bg); }
+
+.badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+.badge-ef { background: var(--verde-claro); color: var(--verde); }
+.badge-tar { background: var(--azul-claro); color: var(--azul); }
+.badge-llevar { background: #FFF3CD; color: #7A5C00; }
+
+.acciones-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-export { background: var(--verde); color: white; border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; }
+.btn-borrar-v { background: none; border: 2px solid var(--rojo); color: var(--rojo); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+/* ── ADMIN ── */
+.admin-screen { padding: 16px; max-width: 760px; margin: 0 auto; }
+
+.admin-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.admin-tab {
+  background: white; border: 2px solid var(--gris-medio); color: var(--gris-texto);
+  border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.12s;
+}
+.admin-tab.active { background: var(--azul); border-color: var(--azul); color: white; }
+
+.admin-seccion { background: white; border-radius: 10px; border: 2px solid var(--gris-medio); margin-bottom: 14px; overflow: hidden; }
+.admin-sec-titulo { background: var(--azul); color: white; font-size: 12px; font-weight: 800; padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
+.admin-lista { padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.admin-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px; border-radius: 7px; background: var(--gris-bg);
+}
+.admin-nombre { flex: 1; font-size: 13px; font-weight: 500; }
+.admin-price-in {
+  width: 72px; border: 2px solid var(--gris-medio); border-radius: 6px;
+  padding: 5px 8px; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+  text-align: right; color: var(--azul);
+}
+.admin-price-in:focus { outline: none; border-color: var(--azul); }
+.btn-del-item {
+  background: none; border: none; color: var(--rojo); font-size: 17px;
+  cursor: pointer; font-weight: 700; line-height: 1; flex-shrink: 0;
+}
+
+/* Agregar nuevo item */
+.add-item-row {
+  display: flex; gap: 6px; padding: 8px; border-top: 2px solid var(--gris-medio); align-items: center;
+}
+.add-name-in {
+  flex: 1; border: 2px solid var(--gris-medio); border-radius: 6px;
+  padding: 7px 10px; font-size: 13px; font-family: 'Inter', sans-serif;
+}
+.add-name-in:focus { outline: none; border-color: var(--azul); }
+.add-price-in {
+  width: 72px; border: 2px solid var(--gris-medio); border-radius: 6px;
+  padding: 7px 8px; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+  text-align: right; color: var(--verde);
+}
+.add-price-in:focus { outline: none; border-color: var(--verde); }
+.btn-add-item {
+  background: var(--verde); color: white; border: none; border-radius: 6px;
+  padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+  font-family: 'Inter', sans-serif; white-space: nowrap;
+}
+
+.btn-guardar-admin {
+  background: var(--azul); color: white; border: none; border-radius: 9px;
+  padding: 13px 0; font-size: 14px; font-weight: 800; cursor: pointer;
+  font-family: 'Inter', sans-serif; width: 100%; margin-top: 4px; letter-spacing: 0.2px;
+}
+
+/* ── PIN ── */
+.pin-overlay {
+  position: fixed; inset: 0; background: rgba(11,27,42,0.85);
+  display: flex; align-items: center; justify-content: center; z-index: 200;
+}
+.pin-box { background: white; border-radius: 16px; padding: 28px 24px; width: 280px; text-align: center; }
+.pin-titulo { font-size: 17px; font-weight: 900; color: var(--azul); margin-bottom: 4px; }
+.pin-sub { font-size: 12px; color: var(--gris-texto); margin-bottom: 16px; }
+.pin-in {
+  width: 100%; border: 2px solid var(--gris-medio); border-radius: 8px;
+  padding: 11px; font-size: 24px; font-weight: 800; text-align: center;
+  letter-spacing: 8px; font-family: 'Inter', sans-serif; margin-bottom: 12px;
+}
+.pin-in:focus { outline: none; border-color: var(--azul); }
+.btn-pin-ok {
+  background: var(--azul); color: white; border: none; border-radius: 8px;
+  padding: 12px 0; font-size: 14px; font-weight: 800; cursor: pointer;
+  font-family: 'Inter', sans-serif; width: 100%; margin-bottom: 8px;
+}
+.btn-pin-cancel { background: none; border: none; color: var(--gris-texto); font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; }
+
+/* ── MODAL VENTA OK ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(11,27,42,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: white; border-radius: 18px; padding: 30px 26px;
+  width: 290px; text-align: center;
+  transform: scale(0.88); transition: transform 0.2s;
+  border-top: 5px solid var(--verde);
+}
+.modal-overlay.show .modal-box { transform: scale(1); }
+.modal-icon { font-size: 44px; margin-bottom: 6px; }
+.modal-tit { font-size: 20px; font-weight: 900; color: var(--negro); margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--gris-texto); margin-bottom: 12px; }
+.modal-total { font-size: 36px; font-weight: 900; color: var(--verde); margin-bottom: 3px; }
+.modal-pago { font-size: 12px; color: var(--gris-texto); margin-bottom: 20px; }
+.btn-modal-ok {
+  background: var(--azul); color: white; border: none; border-radius: 10px;
+  padding: 13px 0; font-size: 15px; font-weight: 800; cursor: pointer;
+  font-family: 'Inter', sans-serif; width: 100%;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%) translateY(90px);
+  padding: 11px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 700; z-index: 999;
+  transition: transform 0.28s ease; box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+  white-space: nowrap; background: var(--negro); color: white;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.verde { background: var(--verde); }
+.toast.rojo  { background: var(--rojo); }
+
+/* ── PORCION MODAL ── */
+.pm-overlay {
+  position: fixed; inset: 0; background: rgba(11,27,42,0.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 160; opacity: 0; pointer-events: none; transition: opacity 0.18s;
+}
+.pm-overlay.show { opacity: 1; pointer-events: all; }
+.pm-box {
+  background: white; border-radius: 16px; padding: 22px 20px;
+  width: 300px; transform: scale(0.9); transition: transform 0.18s;
+  border-top: 4px solid var(--verde);
+}
+.pm-overlay.show .pm-box { transform: scale(1); }
+.pm-titulo { font-size: 15px; font-weight: 800; color: var(--negro); margin-bottom: 12px; }
+.pm-sizes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.pm-size-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--gris-bg); border: 2px solid var(--gris-medio);
+  border-radius: 9px; padding: 10px 14px; cursor: pointer;
+  font-family: 'Inter', sans-serif; transition: all 0.12s;
+}
+.pm-size-btn:hover { border-color: var(--verde); }
+.pm-size-btn .psn { font-size: 13px; font-weight: 600; }
+.pm-size-btn .psp { font-size: 14px; font-weight: 800; color: var(--verde); }
+.pm-cancel { background: none; border: none; color: var(--gris-texto); font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif; width: 100%; padding-top: 4px; }
+
+@media (max-width: 680px) {
+  .caja-layout { grid-template-columns: 1fr; height: auto; }
+  .pedido-panel { position: fixed; bottom: 0; left: 0; right: 0; border-radius: 14px 14px 0 0; max-height: 48vh; z-index: 50; }
+  .menu-panel { padding-bottom: 280px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="linea1">Cafetería y Comedor</span>
+    <span class="linea2">5ª Avenida</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="irA('caja')">🧾 Caja</button>
+    <button class="nav-tab" onclick="irA('ventas')">📊 Ventas</button>
+    <button class="nav-tab" onclick="pedirPin()">⚙️ Admin</button>
+  </div>
+</nav>
+
+<!-- PIN -->
+<div class="pin-overlay" id="pinOverlay" style="display:none">
+  <div class="pin-box">
+    <div class="pin-titulo">Administración</div>
+    <div class="pin-sub">Ingresa el PIN para continuar</div>
+    <input class="pin-in" type="password" id="pinInput" maxlength="4" inputmode="numeric" placeholder="••••">
+    <button class="btn-pin-ok" onclick="verificarPin()">Entrar</button>
+    <button class="btn-pin-cancel" onclick="cerrarPin()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL VENTA -->
+<div class="modal-overlay" id="modalVenta">
+  <div class="modal-box">
+    <div class="modal-icon">✅</div>
+    <div class="modal-tit">¡Venta registrada!</div>
+    <div class="modal-sub" id="mTipo"></div>
+    <div class="modal-total" id="mTotal"></div>
+    <div class="modal-pago" id="mPago"></div>
+    <button class="btn-modal-ok" onclick="cerrarModal()">Nuevo pedido</button>
+  </div>
+</div>
+
+<!-- PORCION MODAL -->
+<div class="pm-overlay" id="pmOverlay">
+  <div class="pm-box">
+    <div class="pm-titulo" id="pmTitulo"></div>
+    <div class="pm-sizes" id="pmSizes"></div>
+    <button class="pm-cancel" onclick="cerrarPm()">Cancelar</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════ PANTALLA CAJA ══════════ -->
+<div class="screen active" id="screen-caja">
+  <div class="caja-layout">
+
+    <div class="menu-panel" id="menuPanel">
+
+      <!-- ALMUERZOS -->
+      <div>
+        <div class="sec-header">
+          <div class="sec-icon azul">🍽️</div>
+          <span class="sec-titulo">Almuerzos</span>
+        </div>
+        <div class="builder-card">
+          <div class="builder-tabs">
+            <button class="builder-tab active" onclick="switchBuilderTab('platos',this)">Platos completos</button>
+            <button class="builder-tab" onclick="switchBuilderTab('porciones',this)">Porciones individuales</button>
+          </div>
+          <div class="builder-panel active" id="panel-platos">
+            <div class="platos-grid" id="platosGrid"></div>
+          </div>
+          <div class="builder-panel" id="panel-porciones">
+            <div class="porciones-nota">Toca una porción para elegir el tamaño (media / completa / doble)</div>
+            <div class="porciones-grid" id="porcionesGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESAYUNOS -->
+      <div>
+        <div class="sec-header">
+          <div class="sec-icon azul">🌅</div>
+          <span class="sec-titulo">Desayunos</span>
+        </div>
+        <div class="items-grid" id="desayunosGrid"></div>
+      </div>
+
+      <!-- PUPUSAS -->
+      <div>
+        <div class="sec-header">
+          <div class="sec-icon verde">🫓</div>
+          <span class="sec-titulo">Pupusas</span>
+        </div>
+        <div class="items-grid" id="pupusasGrid"></div>
+      </div>
+
+      <!-- BEBIDAS -->
+      <div>
+        <div class="sec-header">
+          <div class="sec-icon azul">🥤</div>
+          <span class="sec-titulo">Bebidas</span>
+        </div>
+        <div class="items-grid" id="bebidasGrid"></div>
+      </div>
+
+      <!-- PANADERÍA -->
+      <div>
+        <div class="sec-header">
+          <div class="sec-icon rojo">🥐</div>
+          <span class="sec-titulo">Panadería</span>
+        </div>
+        <div class="items-grid" id="panaderiaGrid"></div>
+      </div>
+
+    </div>
+
+    <!-- PEDIDO PANEL -->
+    <div class="pedido-panel">
+      <div class="pedido-top">
+        <div class="pedido-top-row1">
+          <span class="pedido-titulo">Pedido actual</span>
+          <div class="tipo-btns">
+            <button class="btn-tipo activo" id="btnAqui" onclick="setTipo('aqui')">🍽 Aquí</button>
+            <button class="btn-tipo" id="btnLlevar" onclick="setTipo('llevar')">🥡 Llevar</button>
+          </div>
+        </div>
+      </div>
+      <div class="pedido-items" id="pedidoItems">
+        <div class="pedido-vacio">El pedido está vacío</div>
+      </div>
+      <div class="pedido-footer">
+        <div class="total-row">
+          <span class="total-lbl">Total</span>
+          <span class="total-val" id="totalVal">$0.00</span>
+        </div>
+        <div class="pago-grid">
+          <button class="btn-pago btn-ef" onclick="cobrar('Efectivo')">💵 Efectivo</button>
+          <button class="btn-pago btn-tar" onclick="cobrar('Tarjeta')">💳 Tarjeta</button>
+        </div>
+        <button class="btn-limpiar-ped" onclick="limpiarPedido()">Limpiar pedido</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ PANTALLA VENTAS ══════════ -->
+<div class="screen" id="screen-ventas">
+  <div class="ventas-screen">
+    <div class="page-titulo">📊 Ventas del día</div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="tabla-card">
+      <div class="tabla-head">Historial de ventas</div>
+      <table class="vtbl">
+        <thead><tr>
+          <th>Hora</th><th>Detalle</th><th>Tipo</th><th>Pago</th><th style="text-align:right">Total</th>
+        </tr></thead>
+        <tbody id="ventasTbody"></tbody>
+      </table>
+    </div>
+    <div class="acciones-row">
+      <button class="btn-export" onclick="exportarCSV()">⬇️ Exportar Excel</button>
+      <button class="btn-borrar-v" onclick="limpiarVentas()">🗑 Borrar historial</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PANTALLA ADMIN ══════════ -->
+<div class="screen" id="screen-admin">
+  <div class="admin-screen">
+    <div class="page-titulo">⚙️ Administración</div>
+    <div class="admin-tabs" id="adminTabs"></div>
+    <div id="adminContent"></div>
+    <button class="btn-guardar-admin" onclick="guardarPrecios()">✓ Guardar todos los cambios</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATOS
+// ══════════════════════════════════════════
+const DEFAULTS = {
+  platosCompletos: [
+    { id:'pc1', nombre:'Pechuga a la plancha',       precio: 3.75 },
+    { id:'pc2', nombre:'Pechuga en salsa de tocino', precio: 3.90 },
+    { id:'pc3', nombre:'Muslo dorado',               precio: 3.75 },
+    { id:'pc4', nombre:'Relleno de guisquil',        precio: 3.50 },
+    { id:'pc5', nombre:'Carne a la plancha',         precio: 4.00 },
+  ],
+  porciones: [
+    { id:'por1', nombre:'Pollo',            precio_media:1.25, precio_completa:2.00, precio_doble:3.50 },
+    { id:'por2', nombre:'Carne',            precio_media:1.50, precio_completa:2.50, precio_doble:4.50 },
+    { id:'por3', nombre:'Costilla',         precio_media:1.50, precio_completa:2.50, precio_doble:4.50 },
+    { id:'por4', nombre:'Arroz',            precio_media:0.40, precio_completa:0.75, precio_doble:1.25 },
+    { id:'por5', nombre:'Ensalada',         precio_media:0.50, precio_completa:0.95, precio_doble:1.75 },
+    { id:'por6', nombre:'Frijoles',         precio_media:0.50, precio_completa:0.95, precio_doble:1.75 },
+    { id:'por7', nombre:'Tortillas (x2)',   precio_media:0.10, precio_completa:0.20, precio_doble:0.30 },
+    { id:'por8', nombre:'Tortillas (x3)',   precio_media:0.25, precio_completa:0.25, precio_doble:0.50 },
+    { id:'por9', nombre:'Vegetales al vapor',precio_media:0.50,precio_completa:0.95, precio_doble:1.75 },
+    { id:'por10',nombre:'Papas fritas',     precio_media:0.50, precio_completa:0.95, precio_doble:1.75 },
+  ],
+  desayunos: [
+    { id:'d1',  nombre:'Huevo estrellado',    precio:0.50 },
+    { id:'d2',  nombre:'Huevo revuelto',      precio:0.90 },
+    { id:'d3',  nombre:'Frijoles',            precio:0.95 },
+    { id:'d4',  nombre:'Plátano',             precio:0.75 },
+    { id:'d5',  nombre:'Queso',               precio:0.45 },
+    { id:'d6',  nombre:'Crema',               precio:0.45 },
+    { id:'d7',  nombre:'Chilaquila',          precio:0.60 },
+    { id:'d8',  nombre:'Pancake',             precio:0.50 },
+    { id:'d9',  nombre:'Chorizo',             precio:0.40 },
+    { id:'d10', nombre:'Pan árabe con jamón', precio:0.85 },
+    { id:'d11', nombre:'Pan árabe con pollo', precio:0.90 },
+    { id:'d12', nombre:'Arroz negrito',       precio:0.90 },
+    { id:'d13', nombre:'Casamiento',          precio:0.95 },
+    { id:'d14', nombre:'Tamal',               precio:0.60 },
+    { id:'d15', nombre:'Aguacate (porción)',  precio:0.50 },
+    { id:'d16', nombre:'Pan con pollo',       precio:0.90 },
+    { id:'d17', nombre:'Salchicha guisada',   precio:0.70 },
+    { id:'d18', nombre:'Ejotes guisados',     precio:0.65 },
+    { id:'d19', nombre:'Omelette',            precio:1.00 },
+  ],
+  pupusas: [
+    { id:'p1', nombre:'Queso',         precio:0.95 },
+    { id:'p2', nombre:'Frijol con queso', precio:0.95 },
+    { id:'p3', nombre:'Revuelta',      precio:0.95 },
+    { id:'p4', nombre:'De lo rico',    precio:1.00 },
+  ],
+  bebidas: [
+    { id:'b1',  nombre:'Café',              precio:0.35 },
+    { id:'b2',  nombre:'Café con cremora',  precio:0.45 },
+    { id:'b3',  nombre:'Chocolate',         precio:0.60 },
+    { id:'b4',  nombre:'Leche',             precio:0.60 },
+    { id:'b5',  nombre:'Café con leche',    precio:0.60 },
+    { id:'b6',  nombre:'Capuchino',         precio:1.00 },
+    { id:'b7',  nombre:'Tamarindo',         precio:0.60 },
+    { id:'b8',  nombre:'Maní',              precio:0.60 },
+    { id:'b9',  nombre:'Soda de vidrio',    precio:0.85 },
+    { id:'b10', nombre:'Coca Cola lata',    precio:0.90 },
+    { id:'b11', nombre:'Kolashampan',       precio:0.75 },
+    { id:'b12', nombre:'Té Lipton',         precio:1.00 },
+    { id:'b13', nombre:'Jugo V8',           precio:1.50 },
+    { id:'b14', nombre:'Jugo del Valle',    precio:0.85 },
+    { id:'b15', nombre:'Agua botella',      precio:0.60 },
+    { id:'b16', nombre:'Agua bolsa',        precio:0.15 },
+    { id:'b17', nombre:'Pepsi 355ml',       precio:0.75 },
+    { id:'b18', nombre:'Jugo Cascada',      precio:0.35 },
+    { id:'b19', nombre:'Jugo Salud',        precio:0.85 },
+  ],
+  panaderia: [
+    { id:'pan1', nombre:'Margarita',     precio:0.25 },
+    { id:'pan2', nombre:'Galleta Lido',  precio:0.25 },
+    { id:'pan3', nombre:'Quesadilla',    precio:0.40 },
+    { id:'pan4', nombre:'Semita',        precio:0.40 },
+    { id:'pan5', nombre:'Galleta Oreo',  precio:0.35 },
+  ]
+};
+
+// Cargar precios guardados o usar defaults
+let P = JSON.parse(localStorage.getItem('precios_5av2') || 'null') || JSON.parse(JSON.stringify(DEFAULTS));
+let pedido = [];
+let tipoPedido = 'aqui';
+let ventas = JSON.parse(localStorage.getItem('ventas_5av2') || '[]');
+const PIN = '1234';
+
+// ID único
+let _uid = Date.now();
+const uid = () => 'x' + (++_uid);
+
+// ══════════════════════════════════════════
+//  RENDER CAJA
+// ══════════════════════════════════════════
+function renderCaja() {
+  // Platos completos
+  const pgrid = document.getElementById('platosGrid');
+  pgrid.innerHTML = '';
+  P.platosCompletos.forEach(pl => {
+    const b = document.createElement('button');
+    b.className = 'plato-btn';
+    b.innerHTML = `<span class="pn">${pl.nombre}</span><span class="pp">$${pl.precio.toFixed(2)}</span>`;
+    b.onclick = () => { addItem({id:uid(), tipo:'plato', nombre:pl.nombre, precio:pl.precio, detalle:'Plato completo'}); };
+    pgrid.appendChild(b);
+  });
+
+  // Porciones
+  const porgrid = document.getElementById('porcionesGrid');
+  porgrid.innerHTML = '';
+  P.porciones.forEach(por => {
+    const b = document.createElement('button');
+    b.className = 'porcion-btn';
+    b.innerHTML = `
+      <span class="porn">${por.nombre}</span>
+      <div class="porcion-size-row">
+        <span class="size-tag">½ $${por.precio_media.toFixed(2)}</span>
+        <span class="size-tag">1 $${por.precio_completa.toFixed(2)}</span>
+        <span class="size-tag">2x $${por.precio_doble.toFixed(2)}</span>
+      </div>
+    `;
+    b.onclick = () => abrirPm(por);
+    porgrid.appendChild(b);
+  });
+
+  renderSimpleGrid('desayunosGrid',  P.desayunos,  'desayuno', 'azul');
+  renderSimpleGrid('pupusasGrid',    P.pupusas,    'pupusa',   'verde');
+  renderSimpleGrid('bebidasGrid',    P.bebidas,    'bebida',   'azul');
+  renderSimpleGrid('panaderiaGrid',  P.panaderia,  'panaderia','rojo');
+}
+
+function renderSimpleGrid(id, items, tipo, color) {
+  const g = document.getElementById(id);
+  g.innerHTML = '';
+  items.forEach(item => {
+    const b = document.createElement('button');
+    if (tipo === 'pupusa') {
+      b.className = 'pupusa-btn';
+      b.innerHTML = `<span class="pun">Pupusa de<br>${item.nombre}</span><span class="pup">$${item.precio.toFixed(2)}</span>`;
+    } else if (tipo === 'panaderia') {
+      b.className = 'pan-btn';
+      b.innerHTML = `<span class="pann">${item.nombre}</span><span class="panp">$${item.precio.toFixed(2)}</span>`;
+    } else {
+      b.className = 'item-btn';
+      b.innerHTML = `<span class="in">${item.nombre}</span><span class="ip">$${item.precio.toFixed(2)}</span>`;
+    }
+    b.onclick = () => {
+      const nombre = tipo === 'pupusa' ? `Pupusa de ${item.nombre}` : item.nombre;
+      addItem({id:uid(), tipo, nombre, precio:item.precio, detalle:''});
+    };
+    g.appendChild(b);
+  });
+}
+
+// ── Builder tabs ──
+function switchBuilderTab(panel, btn) {
+  document.querySelectorAll('.builder-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.builder-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + panel).classList.add('active');
+}
+
+// ── Porción modal ──
+let _pmItem = null;
+function abrirPm(por) {
+  _pmItem = por;
+  document.getElementById('pmTitulo').textContent = `Porción de ${por.nombre}`;
+  document.getElementById('pmSizes').innerHTML = `
+    <button class="pm-size-btn" onclick="selPorcion('media')">
+      <span class="psn">½ Media porción</span><span class="psp">$${por.precio_media.toFixed(2)}</span>
+    </button>
+    <button class="pm-size-btn" onclick="selPorcion('completa')">
+      <span class="psn">Porción completa</span><span class="psp">$${por.precio_completa.toFixed(2)}</span>
+    </button>
+    <button class="pm-size-btn" onclick="selPorcion('doble')">
+      <span class="psn">Doble porción</span><span class="psp">$${por.precio_doble.toFixed(2)}</span>
+    </button>
+  `;
+  document.getElementById('pmOverlay').classList.add('show');
+}
+function selPorcion(size) {
+  const por = _pmItem;
+  const precios = { media: por.precio_media, completa: por.precio_completa, doble: por.precio_doble };
+  const labels  = { media: '½ media', completa: 'completa', doble: 'doble' };
+  addItem({ id:uid(), tipo:'porcion', nombre:`Porción de ${por.nombre}`, precio: precios[size], detalle: labels[size] });
+  cerrarPm();
+}
+function cerrarPm() { document.getElementById('pmOverlay').classList.remove('show'); _pmItem = null; }
+
+// ── Pedido ──
+function addItem(item) {
+  pedido.push(item);
+  renderPedido();
+  mostrarToast(`${item.nombre} agregado`);
+}
+
+function renderPedido() {
+  const cont = document.getElementById('pedidoItems');
+  if (!pedido.length) {
+    cont.innerHTML = '<div class="pedido-vacio">El pedido está vacío</div>';
+    document.getElementById('totalVal').textContent = '$0.00';
+    return;
+  }
+  let total = 0;
+  cont.innerHTML = '';
+  pedido.forEach((item, i) => {
+    total += item.precio;
+    const d = document.createElement('div');
+    d.className = 'pedido-linea';
+    d.innerHTML = `
+      <div class="pl-info">
+        <div class="pl-nombre">${item.nombre}</div>
+        ${item.detalle ? `<div class="pl-det">${item.detalle}</div>` : ''}
+      </div>
+      <div class="pl-right">
+        <span class="pl-precio">$${item.precio.toFixed(2)}</span>
+        <button class="btn-q" onclick="quitarItem(${i})">×</button>
+      </div>`;
+    cont.appendChild(d);
+  });
+  document.getElementById('totalVal').textContent = `$${total.toFixed(2)}`;
+}
+
+function quitarItem(i) { pedido.splice(i,1); renderPedido(); }
+function limpiarPedido() { pedido = []; renderPedido(); }
+function setTipo(t) {
+  tipoPedido = t;
+  document.getElementById('btnAqui').classList.toggle('activo', t==='aqui');
+  document.getElementById('btnLlevar').classList.toggle('activo', t==='llevar');
+}
+
+// ══════════════════════════════════════════
+//  GOOGLE SHEETS — Apps Script Web App URL
+//  Pega aquí la URL de tu Apps Script deployment
+// ══════════════════════════════════════════
+const SHEETS_URL = localStorage.getItem('sheets_url_5av') || '';
+
+async function enviarASheets(venta) {
+  const url = localStorage.getItem('sheets_url_5av') || '';
+  if (!url) return; // Sin URL configurada, solo guarda local
+  try {
+    const resumen = venta.items.map(i => i.nombre + (i.detalle ? ` (${i.detalle})` : '')).join(' | ');
+    const fila = [
+      venta.fecha,
+      venta.hora,
+      venta.tipo === 'llevar' ? 'Para llevar' : 'Para comer aquí',
+      venta.pago,
+      resumen,
+      venta.total.toFixed(2),
+      // Desglose por tipo
+      venta.items.filter(i=>i.tipo==='plato').length,
+      venta.items.filter(i=>i.tipo==='porcion').length,
+      venta.items.filter(i=>i.tipo==='pupusa').length,
+      venta.items.filter(i=>i.tipo==='desayuno').length,
+      venta.items.filter(i=>i.tipo==='bebida').length,
+      venta.items.filter(i=>i.tipo==='panaderia').length,
+    ];
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fila })
+    });
+  } catch(e) {
+    console.warn('Sheets sync falló:', e);
+  }
+}
+
+function cobrar(metodo) {
+  if (!pedido.length) { mostrarToast('Agrega items primero','rojo'); return; }
+  const total = pedido.reduce((s,i)=>s+i.precio,0);
+  const venta = {
+    fecha: new Date().toLocaleDateString('es-SV'),
+    hora:  new Date().toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit'}),
+    items: pedido.map(i=>({nombre:i.nombre, detalle:i.detalle, precio:i.precio, tipo:i.tipo})),
+    total, pago:metodo, tipo:tipoPedido
+  };
+  ventas.push(venta);
+  localStorage.setItem('ventas_5av2', JSON.stringify(ventas));
+
+  // Enviar a Google Sheets en segundo plano
+  enviarASheets(venta);
+
+  document.getElementById('mTipo').textContent  = tipoPedido==='llevar'?'🥡 Para llevar':'🍽️ Para comer aquí';
+  document.getElementById('mTotal').textContent = `$${total.toFixed(2)}`;
+  document.getElementById('mPago').textContent  = metodo==='Efectivo'?'💵 Pagado en efectivo':'💳 Pagado con tarjeta';
+  document.getElementById('modalVenta').classList.add('show');
+
+  pedido = [];
+}
+function cerrarModal() {
+  document.getElementById('modalVenta').classList.remove('show');
+  renderPedido();
+}
+
+// ══════════════════════════════════════════
+//  VENTAS
+// ══════════════════════════════════════════
+function renderVentas() {
+  const hoy = new Date().toLocaleDateString('es-SV');
+  const hoyV = ventas.filter(v=>v.fecha===hoy);
+  const tot   = hoyV.reduce((s,v)=>s+v.total,0);
+  const ef    = hoyV.filter(v=>v.pago==='Efectivo').reduce((s,v)=>s+v.total,0);
+  const tar   = hoyV.filter(v=>v.pago==='Tarjeta').reduce((s,v)=>s+v.total,0);
+  const platos  = hoyV.reduce((s,v)=>s+v.items.filter(i=>i.tipo==='plato').length,0);
+  const porciones= hoyV.reduce((s,v)=>s+v.items.filter(i=>i.tipo==='porcion').length,0);
+  const pupusas = hoyV.reduce((s,v)=>s+v.items.filter(i=>i.tipo==='pupusa').length,0);
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-lbl">Total hoy</div><div class="stat-val" style="color:var(--azul)">$${tot.toFixed(2)}</div><div class="stat-sub">${hoyV.length} ventas</div></div>
+    <div class="stat-card"><div class="stat-lbl">Efectivo</div><div class="stat-val" style="color:var(--verde)">$${ef.toFixed(2)}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Tarjeta</div><div class="stat-val" style="color:var(--azul)">$${tar.toFixed(2)}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Platos completos</div><div class="stat-val">${platos}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Porciones</div><div class="stat-val">${porciones}</div></div>
+    <div class="stat-card"><div class="stat-lbl">Pupusas</div><div class="stat-val" style="color:var(--verde)">${pupusas}</div></div>
+  `;
+
+  const tbody = document.getElementById('ventasTbody');
+  tbody.innerHTML = '';
+  if (!ventas.length) {
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--gris-texto);padding:20px">Sin ventas</td></tr>';
+    return;
+  }
+  [...ventas].reverse().forEach(v => {
+    const tr = document.createElement('tr');
+    const res = v.items.map(i=>i.nombre).join(', ');
+    tr.innerHTML = `
+      <td>${v.hora}<br><small style="color:var(--gris-texto)">${v.fecha}</small></td>
+      <td style="max-width:200px;font-size:11px">${res}</td>
+      <td>${v.tipo==='llevar'?'<span class="badge badge-llevar">Llevar</span>':'—'}</td>
+      <td>${v.pago==='Efectivo'?'<span class="badge badge-ef">Efectivo</span>':'<span class="badge badge-tar">Tarjeta</span>'}</td>
+      <td style="text-align:right;font-weight:800">$${v.total.toFixed(2)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function exportarCSV() {
+  if (!ventas.length) { mostrarToast('No hay ventas','rojo'); return; }
+  let csv = 'Fecha,Hora,Tipo,Pago,Items,Total\n';
+  ventas.forEach(v => {
+    const items = v.items.map(i=>i.nombre+(i.detalle?` (${i.detalle})`:''))
+      .join(' | ').replace(/,/g,';');
+    csv += `${v.fecha},${v.hora},${v.tipo},${v.pago},"${items}",$${v.total.toFixed(2)}\n`;
+  });
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ventas-5a-${new Date().toLocaleDateString('es-SV').replace(/\//g,'-')}.csv`;
+  a.click();
+  mostrarToast('Archivo descargado ✓','verde');
+}
+
+function limpiarVentas() {
+  if (!confirm('¿Borrar todo el historial? No se puede deshacer.')) return;
+  ventas = []; localStorage.setItem('ventas_5av2','[]');
+  renderVentas(); mostrarToast('Historial borrado');
+}
+
+// ══════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════
+const SECCIONES_ADMIN = [
+  { key:'platosCompletos', label:'Platos completos', tipo:'simple' },
+  { key:'porciones',       label:'Porciones',        tipo:'porcion' },
+  { key:'desayunos',       label:'Desayunos',        tipo:'simple' },
+  { key:'pupusas',         label:'Pupusas',          tipo:'simple' },
+  { key:'bebidas',         label:'Bebidas',          tipo:'simple' },
+  { key:'panaderia',       label:'Panadería',        tipo:'simple' },
+  { key:'sheets',          label:'📊 Google Sheets', tipo:'sheets' },
+];
+let adminSecActiva = 'platosCompletos';
+
+function guardarSheetsUrl() {
+  const url = document.getElementById('sheetsUrlInput').value.trim();
+  if (url && !url.startsWith('https://script.google.com')) {
+    mostrarToast('URL inválida, debe ser de script.google.com','rojo'); return;
+  }
+  localStorage.setItem('sheets_url_5av', url);
+  mostrarToast(url ? 'URL guardada ✓' : 'URL eliminada','verde');
+  renderAdminTabs(); renderAdminContent();
+}
+function borrarSheetsUrl() {
+  localStorage.removeItem('sheets_url_5av');
+  mostrarToast('Google Sheets desconectado');
+  renderAdminTabs(); renderAdminContent();
+}
+async function probarSheets() {
+  const url = localStorage.getItem('sheets_url_5av');
+  if (!url) { mostrarToast('No hay URL configurada','rojo'); return; }
+  mostrarToast('Enviando prueba...');
+  try {
+    await fetch(url, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ fila:['PRUEBA', new Date().toLocaleTimeString('es-SV'), 'Aquí', 'Efectivo', 'Venta de prueba', '0.00', 0,0,0,0,0,0] })
+    });
+    mostrarToast('Prueba enviada — revisa tu Sheet ✓','verde');
+  } catch(e) { mostrarToast('Error al conectar','rojo'); }
+}
+
+function renderAdminTabs() {
+  const tabs = document.getElementById('adminTabs');
+  tabs.innerHTML = '';
+  SECCIONES_ADMIN.forEach(sec => {
+    const b = document.createElement('button');
+    b.className = 'admin-tab' + (sec.key===adminSecActiva?' active':'');
+    b.textContent = sec.label;
+    b.onclick = () => { adminSecActiva = sec.key; renderAdminTabs(); renderAdminContent(); };
+    tabs.appendChild(b);
+  });
+}
+
+function renderAdminContent() {
+  const cont = document.getElementById('adminContent');
+  cont.innerHTML = '';
+
+  // Pantalla Google Sheets
+  if (adminSecActiva === 'sheets') {
+    const urlGuardada = localStorage.getItem('sheets_url_5av') || '';
+    const conectado = !!urlGuardada;
+    const sheetsSec = document.createElement('div');
+    sheetsSec.className = 'admin-seccion';
+    sheetsSec.innerHTML = `
+      <div class="admin-sec-titulo" style="background:var(--verde);display:flex;align-items:center;justify-content:space-between">
+        Google Sheets
+        <span style="background:${conectado?'#E6F4EC':'#FDECEA'};color:${conectado?'#1A7A3C':'#C0392B'};font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px">
+          ${conectado ? '✓ Conectado' : 'Sin conectar'}
+        </span>
+      </div>
+      <div class="admin-lista">
+        <div style="font-size:12px;color:var(--gris-texto);line-height:1.6;padding:4px 0 10px">
+          Cada venta se guardará automáticamente en tu Google Sheet.<br>
+          Necesitas crear un <strong>Apps Script</strong> en tu hoja — 
+          sigue las instrucciones de abajo.
+        </div>
+        <div style="background:var(--azul-claro);border-radius:8px;padding:12px;font-size:12px;line-height:1.7;margin-bottom:10px">
+          <strong>Cómo configurar (una sola vez):</strong><br>
+          1. Abre tu Google Sheet "Ventas 5a Avenida"<br>
+          2. Menú <strong>Extensiones → Apps Script</strong><br>
+          3. Borra el código que aparece y pega el código que está abajo<br>
+          4. Haz clic en <strong>Implementar → Nueva implementación</strong><br>
+          5. Tipo: <strong>App web</strong> · Ejecutar como: <strong>Yo</strong> · Acceso: <strong>Cualquier persona</strong><br>
+          6. Copia la URL que aparece y pégala aquí abajo
+        </div>
+        <div style="background:#1e1e2e;border-radius:8px;padding:12px;margin-bottom:10px">
+          <pre style="color:#a6e3a1;font-size:10px;line-height:1.6;white-space:pre-wrap;font-family:monospace">function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.openById('1sAp4zi2kFbVmOh4HQgWzrRe1jcup3l4-NG_RcXP_aVs').getSheets()[0];
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['Fecha','Hora','Tipo','Pago','Items','Total','Platos','Porciones','Pupusas','Desayunos','Bebidas','Panadería']);
+    }
+    sheet.appendRow(data.fila);
+    return ContentService.createTextOutput('ok');
+  } catch(err) {
+    return ContentService.createTextOutput('error: ' + err);
+  }
+}</pre>
+        </div>
+        <div class="admin-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <label style="font-size:12px;font-weight:700;color:var(--negro)">URL del Apps Script:</label>
+          <input id="sheetsUrlInput" type="text"
+            style="width:100%;border:2px solid var(--gris-medio);border-radius:7px;padding:9px 10px;font-size:12px;font-family:'Inter',sans-serif"
+            placeholder="https://script.google.com/macros/s/..."
+            value="${urlGuardada}">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button onclick="guardarSheetsUrl()" style="background:var(--verde);color:white;border:none;border-radius:7px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">
+              Guardar
+            </button>
+            ${conectado ? `<button onclick="probarSheets()" style="background:var(--azul);color:white;border:none;border-radius:7px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Enviar prueba</button>` : ''}
+            ${conectado ? `<button onclick="borrarSheetsUrl()" style="background:none;border:2px solid var(--rojo);color:var(--rojo);border-radius:7px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Desconectar</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+    cont.appendChild(sheetsSec);
+    return;
+  }
+
+  const sec = SECCIONES_ADMIN.find(s=>s.key===adminSecActiva);
+  if (!sec) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'admin-seccion';
+  wrap.innerHTML = `<div class="admin-sec-titulo">${sec.label}</div>`;
+
+  const lista = document.createElement('div');
+  lista.className = 'admin-lista';
+  lista.id = 'admin-lista-' + sec.key;
+
+  P[sec.key].forEach((item, idx) => {
+    lista.appendChild(crearAdminRow(item, sec.tipo, sec.key, idx));
+  });
+  wrap.appendChild(lista);
+
+  // Formulario agregar
+  const addRow = document.createElement('div');
+  addRow.className = 'add-item-row';
+  if (sec.tipo === 'porcion') {
+    addRow.innerHTML = `
+      <input class="add-name-in" id="addN-${sec.key}" placeholder="Nombre porción" style="flex:1">
+      <input class="add-price-in" id="addPm-${sec.key}" placeholder="½" style="width:52px" type="number" step="0.05">
+      <input class="add-price-in" id="addPc-${sec.key}" placeholder="1" style="width:52px" type="number" step="0.05">
+      <input class="add-price-in" id="addPd-${sec.key}" placeholder="2x" style="width:52px" type="number" step="0.05">
+      <button class="btn-add-item" onclick="agregarItem('${sec.key}','porcion')">+ Agregar</button>
+    `;
+  } else {
+    addRow.innerHTML = `
+      <input class="add-name-in" id="addN-${sec.key}" placeholder="Nombre del item">
+      <span style="font-size:12px;color:var(--gris-texto);flex-shrink:0">$</span>
+      <input class="add-price-in" id="addP-${sec.key}" placeholder="0.00" type="number" step="0.05" min="0">
+      <button class="btn-add-item" onclick="agregarItem('${sec.key}','simple')">+ Agregar</button>
+    `;
+  }
+  wrap.appendChild(addRow);
+  cont.appendChild(wrap);
+}
+
+function crearAdminRow(item, tipo, secKey, idx) {
+  const row = document.createElement('div');
+  row.className = 'admin-row';
+  row.id = `arow-${secKey}-${idx}`;
+
+  if (tipo === 'porcion') {
+    row.innerHTML = `
+      <span class="admin-nombre">${item.nombre}</span>
+      <span style="font-size:10px;color:var(--gris-texto)">½</span>
+      <input class="admin-price-in" style="width:60px" type="number" step="0.05" min="0"
+        data-key="${secKey}" data-idx="${idx}" data-field="precio_media" value="${item.precio_media.toFixed(2)}">
+      <span style="font-size:10px;color:var(--gris-texto)">1</span>
+      <input class="admin-price-in" style="width:60px" type="number" step="0.05" min="0"
+        data-key="${secKey}" data-idx="${idx}" data-field="precio_completa" value="${item.precio_completa.toFixed(2)}">
+      <span style="font-size:10px;color:var(--gris-texto)">2x</span>
+      <input class="admin-price-in" style="width:60px" type="number" step="0.05" min="0"
+        data-key="${secKey}" data-idx="${idx}" data-field="precio_doble" value="${item.precio_doble.toFixed(2)}">
+      <button class="btn-del-item" onclick="eliminarItem('${secKey}',${idx})">×</button>
+    `;
+  } else {
+    row.innerHTML = `
+      <span class="admin-nombre">${item.nombre}</span>
+      <span style="font-size:11px;color:var(--gris-texto)">$</span>
+      <input class="admin-price-in" type="number" step="0.05" min="0"
+        data-key="${secKey}" data-idx="${idx}" data-field="precio" value="${item.precio.toFixed(2)}">
+      <button class="btn-del-item" onclick="eliminarItem('${secKey}',${idx})">×</button>
+    `;
+  }
+  return row;
+}
+
+function agregarItem(secKey, tipo) {
+  const nombre = document.getElementById(`addN-${secKey}`).value.trim();
+  if (!nombre) { mostrarToast('Escribe un nombre','rojo'); return; }
+
+  if (tipo === 'porcion') {
+    const pm = parseFloat(document.getElementById(`addPm-${secKey}`).value);
+    const pc = parseFloat(document.getElementById(`addPc-${secKey}`).value);
+    const pd = parseFloat(document.getElementById(`addPd-${secKey}`).value);
+    if (isNaN(pm)||isNaN(pc)||isNaN(pd)) { mostrarToast('Ingresa los 3 precios','rojo'); return; }
+    P[secKey].push({ id:uid(), nombre, precio_media:pm, precio_completa:pc, precio_doble:pd });
+  } else {
+    const precio = parseFloat(document.getElementById(`addP-${secKey}`).value);
+    if (isNaN(precio)) { mostrarToast('Ingresa un precio válido','rojo'); return; }
+    P[secKey].push({ id:uid(), nombre, precio });
+  }
+
+  renderAdminContent();
+  mostrarToast(`${nombre} agregado ✓`,'verde');
+}
+
+function eliminarItem(secKey, idx) {
+  if (!confirm(`¿Eliminar "${P[secKey][idx].nombre}"?`)) return;
+  P[secKey].splice(idx,1);
+  renderAdminContent();
+}
+
+function guardarPrecios() {
+  // Leer todos los inputs antes de guardar
+  document.querySelectorAll('.admin-price-in[data-key]').forEach(inp => {
+    const key   = inp.dataset.key;
+    const idx   = parseInt(inp.dataset.idx);
+    const field = inp.dataset.field;
+    const val   = parseFloat(inp.value);
+    if (!isNaN(val) && val >= 0 && P[key] && P[key][idx]) {
+      P[key][idx][field] = val;
+    }
+  });
+  localStorage.setItem('precios_5av2', JSON.stringify(P));
+  renderCaja();
+  mostrarToast('Cambios guardados ✓','verde');
+}
+
+// ══════════════════════════════════════════
+//  NAVEGACIÓN
+// ══════════════════════════════════════════
+function irA(pantalla) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('screen-'+pantalla).classList.add('active');
+  const idx = ['caja','ventas','admin'].indexOf(pantalla);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  if (pantalla==='ventas') renderVentas();
+  if (pantalla==='admin')  { renderAdminTabs(); renderAdminContent(); }
+}
+
+function pedirPin() {
+  document.getElementById('pinOverlay').style.display='flex';
+  document.getElementById('pinInput').value='';
+  setTimeout(()=>document.getElementById('pinInput').focus(),100);
+}
+function verificarPin() {
+  if (document.getElementById('pinInput').value===PIN) {
+    cerrarPin(); irA('admin');
+  } else {
+    mostrarToast('PIN incorrecto','rojo');
+    document.getElementById('pinInput').value='';
+    document.getElementById('pinInput').focus();
+  }
+}
+function cerrarPin() { document.getElementById('pinOverlay').style.display='none'; }
+document.getElementById('pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') verificarPin(); });
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+let _tt;
+function mostrarToast(msg,tipo='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(tipo?' '+tipo:'');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+renderCaja();
+</script>
+</body>
+</html>
