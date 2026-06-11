@@ -819,8 +819,10 @@ async function enviarASheets(venta) {
   if (!url) return; // Sin URL configurada, solo guarda local
   try {
     const resumen = venta.items.map(i => i.nombre + (i.detalle ? ` (${i.detalle})` : '')).join(' | ');
+    const hoy = new Date();
+    const fechaISO = hoy.getFullYear() + "-" + String(hoy.getMonth()+1).padStart(2,"0") + "-" + String(hoy.getDate()).padStart(2,"0");
     const fila = [
-      venta.fecha,
+      fechaISO,
       venta.hora,
       venta.tipo === 'llevar' ? 'Para llevar' : 'Para comer aquí',
       venta.pago,
